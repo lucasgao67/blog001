@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"github.com/go-redis/redis"
 	"time"
 )
@@ -13,15 +14,16 @@ func RedisInit() {
 	})
 }
 
-func LockBlock(key string) {
+func LockBlock(key string) error {
 
 	// 不过期
 	for {
 		if cmd := RedisClient.SetNX(key, time.Now().Unix(), 0); cmd.Val() {
-			return
+			return nil
 		}
 		time.Sleep(100 * time.Millisecond)
 	}
+	return errors.New("")
 
 }
 
